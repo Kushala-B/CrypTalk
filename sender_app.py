@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 # 🔑 PUT YOUR OPENROUTER API KEY HERE
 OPENROUTER_API_KEY = "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"
-BACKEND_URL = "https://cryptalk-jriee.onrender.com/send"
+BACKEND_URL = "https://cryptalk-2.onrender.com/send"
 
 # 🌍 Languages (UPDATED)
 LANG = {

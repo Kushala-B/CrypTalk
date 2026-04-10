@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import zlib
 import time
 
-BACKEND_URL = "https://cryptalk-jriee.onrender.com/get"
+BACKEND_URL = "https://cryptalk-2.onrender.com/get"
 
 LANG = {
     "English":"en",

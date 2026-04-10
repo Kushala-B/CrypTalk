@@ -22,6 +22,6 @@ def send_message(msg: Message):
     storage = msg.dict()
     return {"status": "stored"}
 
-@app.get("/get")
-def get_message():
-    return storage
+@app.get("/")
+def home():
+    return {"message": "CrypTalk backend is running"}

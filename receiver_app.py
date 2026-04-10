@@ -3,7 +3,6 @@ import requests
 from deep_translator import GoogleTranslator
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import zlib
-
 BACKEND_URL = "https://cryptalk-jriee.onrender.com/get"
 
 LANG = {

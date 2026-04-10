@@ -5,10 +5,10 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 import zlib
 import time
 
-# 🔗 YOUR BACKEND
+# 🔗 Backend URL
 BACKEND_URL = "https://cryptalk-2.onrender.com/get"
 
-# 🌍 Languages
+# 🌍 Language codes
 LANG = {
     "English": "en",
     "Hindi": "hi",
@@ -18,7 +18,19 @@ LANG = {
     "Malayalam": "ml"
 }
 
-# 🔐 Decrypt function
+# 😊 Emoji mapping (FIXED)
+EMOJI_MAP = {
+    "joy": "😊",
+    "sadness": "😢",
+    "anger": "😠",
+    "fear": "😨",
+    "surprise": "😲",
+    "neutral": "😐",
+    "confusion": "😕",
+    "question": "❓"
+}
+
+# 🔐 Decryption
 def decrypt(enc, key, nonce):
     aes = AESGCM(bytes.fromhex(key))
     return aes.decrypt(bytes.fromhex(nonce), bytes.fromhex(enc), None)
@@ -29,7 +41,7 @@ st.title("📥 CrypTalk Receiver")
 
 chosen_lang = st.selectbox("Choose Output Language", list(LANG.keys()))
 
-# 🔘 Optional wake button
+# 🔄 Wake backend button
 if st.button("🔄 Wake Backend"):
     try:
         requests.get(BACKEND_URL)
@@ -37,15 +49,15 @@ if st.button("🔄 Wake Backend"):
     except:
         st.warning("Backend still waking up...")
 
-# 📥 Receive button
+# 📥 Receive message
 if st.button("Receive Message"):
 
     st.info("Connecting to server... please wait")
 
     data = None
 
-    # 🔁 Retry loop (IMPORTANT FIX)
-    for i in range(10):  # tries for ~30 seconds
+    # 🔁 Retry logic
+    for i in range(10):
         try:
             res = requests.get(BACKEND_URL, timeout=10)
 
@@ -63,16 +75,15 @@ if st.button("Receive Message"):
             st.write(f"Retrying... {i+1}/10")
             time.sleep(3)
 
-        except Exception as e:
+        except:
             st.write("Still trying to connect...")
             time.sleep(3)
 
-    # ❌ If still no data
     if not data or "encrypted" not in data:
         st.error("❌ Backend still sleeping OR no message found")
         st.stop()
 
-    # 🔐 Decrypt + decompress
+    # 🔐 Decrypt
     try:
         decrypted = decrypt(data["encrypted"], data["key"], data["nonce"])
         text = zlib.decompress(decrypted).decode()
@@ -87,10 +98,15 @@ if st.button("Receive Message"):
     else:
         tag, msg = "", text
 
-    # 😊 Emotion split
-    emotion_parts = data["emotion"].split()
-    emotion_word = emotion_parts[0]
-    emoji = emotion_parts[1] if len(emotion_parts) > 1 else ""
+    # 🧠 Emotion detection (FIXED)
+    emotion_word = data["emotion"].split()[0].lower()
+
+    # 💡 Detect question
+    if "?" in msg:
+        emotion_word = "question"
+
+    # 😊 Get emoji
+    emoji = EMOJI_MAP.get(emotion_word, "💬")
 
     # 🌍 Translate message
     translated_msg = GoogleTranslator(
